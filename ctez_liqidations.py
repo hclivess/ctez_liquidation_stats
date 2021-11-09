@@ -29,15 +29,10 @@ def parse_operations(hash_list):
 
     return operation_list
 
+def prettify(liquidations_list):
+    output_list = []
 
-if __name__ == "__main__":
-    candidates = parse_search()
-    hashes = qualify(candidates)
-    liquidations = parse_operations(hashes)
-
-    print(liquidations)
-    for liquidation in liquidations:
-        print(liquidation)
+    for liquidation in liquidations_list:
 
         ctez_outstanding_from = (liquidation[0]
         ["storage_diff"]
@@ -74,7 +69,7 @@ if __name__ == "__main__":
         ["value"]
         )
 
-        robber = (liquidation[0]
+        liquidator = (liquidation[0]
         ["parameters"][0]
         ["children"][2]
         ["value"]
@@ -83,13 +78,31 @@ if __name__ == "__main__":
         hash = (liquidation[0]
         ["hash"])
 
+        ctez_lost = (int(ctez_outstanding_from) - int(ctez_outstanding_to)) / 1000000
+        xtz_lost = (int(tez_balance_from) - int(tez_balance_to)) / 1000000
+
         liquidation_dict = {"ctez_outstanding_from": ctez_outstanding_from,
                             "ctez_outstanding_to": ctez_outstanding_to,
                             "tez_balance_from": tez_balance_from,
                             "tez_balance_to": tez_balance_to,
                             "owner": owner,
-                            "robber": robber,
-                            "hash": hash
+                            "liquidator": liquidator,
+                            "hash": hash,
+                            "xtz_lost": xtz_lost,
+                            "ctez_lost": ctez_lost
                             }
+        output_list.append(liquidation_dict)
 
-        print(liquidation_dict)
+    return output_list
+
+def save(output):
+    with open("output.json", "w") as outfile:
+        outfile.write()
+
+if __name__ == "__main__":
+    candidates = parse_search()
+    hashes = qualify(candidates)
+    liquidations = parse_operations(hashes)
+    nice = prettify(liquidations)
+
+    print(nice)
