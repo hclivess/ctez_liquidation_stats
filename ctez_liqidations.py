@@ -75,6 +75,10 @@ def prettify(liquidations_list):
         ["value"]
         )
 
+        timestamp = (liquidation[0]
+        ["timestamp"]
+        )
+
         hash = (liquidation[0]
         ["hash"])
 
@@ -89,7 +93,8 @@ def prettify(liquidations_list):
             "owner": owner,
             "liquidator": liquidator,
             "xtz_lost": xtz_lost,
-            "ctez_lost": ctez_lost
+            "ctez_lost": ctez_lost,
+            "timestamp": timestamp
         }
 
     return liquidation_dict
@@ -109,11 +114,13 @@ def merge_save(data):
         outfile.write(json.dumps(merged))
 
 
-if __name__ == "__main__":
+def run():
     candidates = parse_search()
     hashes = qualify(candidates)
     liquidations = parse_operations(hashes)
     nice = prettify(liquidations)
-
-    print(nice)
     merge_save(nice)
+
+
+if __name__ == "__main__":
+    run()
