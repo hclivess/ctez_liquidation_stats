@@ -29,11 +29,11 @@ def parse_operations(hash_list):
 
     return operation_list
 
+
 def prettify(liquidations_list):
-    output_list = []
+    liquidation_dict = {}
 
     for liquidation in liquidations_list:
-
         ctez_outstanding_from = (liquidation[0]
         ["storage_diff"]
         ["children"][5]
@@ -81,23 +81,33 @@ def prettify(liquidations_list):
         ctez_lost = (int(ctez_outstanding_from) - int(ctez_outstanding_to)) / 1000000
         xtz_lost = (int(tez_balance_from) - int(tez_balance_to)) / 1000000
 
-        liquidation_dict = {"ctez_outstanding_from": ctez_outstanding_from,
-                            "ctez_outstanding_to": ctez_outstanding_to,
-                            "tez_balance_from": tez_balance_from,
-                            "tez_balance_to": tez_balance_to,
-                            "owner": owner,
-                            "liquidator": liquidator,
-                            "hash": hash,
-                            "xtz_lost": xtz_lost,
-                            "ctez_lost": ctez_lost
-                            }
-        output_list.append(liquidation_dict)
+        liquidation_dict[hash] = {
+            "ctez_outstanding_from": ctez_outstanding_from,
+            "ctez_outstanding_to": ctez_outstanding_to,
+            "tez_balance_from": tez_balance_from,
+            "tez_balance_to": tez_balance_to,
+            "owner": owner,
+            "liquidator": liquidator,
+            "xtz_lost": xtz_lost,
+            "ctez_lost": ctez_lost
+        }
 
-    return output_list
+    return liquidation_dict
 
-def save(output):
-    with open("output.json", "w") as outfile:
-        outfile.write()
+
+def merge_save(data):
+    try:
+        with open("database.json", "r") as infile:
+            indata = json.loads(infile.read())
+    except:
+        indata = {}
+        print("No database file found, creating...")
+
+    merged = {**indata, **data}
+
+    with open("database.json", "w") as outfile:
+        outfile.write(json.dumps(merged))
+
 
 if __name__ == "__main__":
     candidates = parse_search()
@@ -106,3 +116,4 @@ if __name__ == "__main__":
     nice = prettify(liquidations)
 
     print(nice)
+    merge_save(nice)
