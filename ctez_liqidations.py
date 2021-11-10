@@ -17,12 +17,14 @@ def parse_search():
     url = f"https://api.better-call.dev/v1/search?q=liquidate&s={(ts - lookback)}&i=operation"  # week to date
     parsed = requests.get(url).text
     parsed_json = json.loads(parsed)
+    print(parsed_json)
     return parsed_json["items"]
 
 
 def parse_operations(hash_list):
     operation_list = []
     for operation in hash_list:
+        print(f"Parsing operation {operation}")
         url = f"https://api.better-call.dev/v1/opg/{operation}"
         parsed = requests.get(url).text
         parsed_json = json.loads(parsed)

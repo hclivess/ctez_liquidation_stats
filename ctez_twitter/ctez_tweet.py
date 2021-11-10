@@ -34,6 +34,7 @@ def pick():
 
             checkdata.append(op_hash)
             update_tweeted_file(checkdata)
+            time.sleep(30) #prevent ban
 
 
 def tweet(what):
