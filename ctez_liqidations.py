@@ -2,6 +2,7 @@ import time
 import requests
 import json
 
+lookback = 86400*2
 
 def qualify(candidates):
     liquidations_list = []
@@ -13,7 +14,7 @@ def qualify(candidates):
 
 def parse_search():
     ts = int(time.time())
-    url = f"https://api.better-call.dev/v1/search?q=liquidate&s={(ts - 604800)}&i=operation"  # week to date
+    url = f"https://api.better-call.dev/v1/search?q=liquidate&s={(ts - lookback)}&i=operation"  # week to date
     parsed = requests.get(url).text
     parsed_json = json.loads(parsed)
     return parsed_json["items"]
@@ -34,68 +35,71 @@ def prettify(liquidations_list):
     liquidation_dict = {}
 
     for liquidation in liquidations_list:
-        ctez_outstanding_from = (liquidation[0]
-        ["storage_diff"]
-        ["children"][5]
-        ["children"][0]
-        ["children"][1]
-        ["from"])
+        try:
+            ctez_outstanding_from = (liquidation[0]
+            ["storage_diff"]
+            ["children"][5]
+            ["children"][0]
+            ["children"][1]
+            ["from"])
 
-        ctez_outstanding_to = (liquidation[0]
-        ["storage_diff"]
-        ["children"][5]
-        ["children"][0]
-        ["children"][1]
-        ["value"])
+            ctez_outstanding_to = (liquidation[0]
+            ["storage_diff"]
+            ["children"][5]
+            ["children"][0]
+            ["children"][1]
+            ["value"])
 
-        tez_balance_from = (liquidation[0]
-        ["storage_diff"]
-        ["children"][5]
-        ["children"][0]
-        ["children"][2]
-        ["from"])
+            tez_balance_from = (liquidation[0]
+            ["storage_diff"]
+            ["children"][5]
+            ["children"][0]
+            ["children"][2]
+            ["from"])
 
-        tez_balance_to = (liquidation[0]
-        ["storage_diff"]
-        ["children"][5]
-        ["children"][0]
-        ["children"][2]
-        ["value"])
+            tez_balance_to = (liquidation[0]
+            ["storage_diff"]
+            ["children"][5]
+            ["children"][0]
+            ["children"][2]
+            ["value"])
 
-        owner = (liquidation[0]
-        ["parameters"][0]
-        ["children"][0]
-        ["children"][1]
-        ["value"]
-        )
+            owner = (liquidation[0]
+            ["parameters"][0]
+            ["children"][0]
+            ["children"][1]
+            ["value"]
+            )
 
-        liquidator = (liquidation[0]
-        ["parameters"][0]
-        ["children"][2]
-        ["value"]
-        )
+            liquidator = (liquidation[0]
+            ["parameters"][0]
+            ["children"][2]
+            ["value"]
+            )
 
-        timestamp = (liquidation[0]
-        ["timestamp"]
-        )
+            timestamp = (liquidation[0]
+            ["timestamp"]
+            )
 
-        hash = (liquidation[0]
-        ["hash"])
+            hash = (liquidation[0]
+            ["hash"])
 
-        ctez_lost = (int(ctez_outstanding_from) - int(ctez_outstanding_to)) / 1000000
-        xtz_lost = (int(tez_balance_from) - int(tez_balance_to)) / 1000000
+            ctez_lost = (int(ctez_outstanding_from) - int(ctez_outstanding_to)) / 1000000
+            xtz_lost = (int(tez_balance_from) - int(tez_balance_to)) / 1000000
 
-        liquidation_dict[hash] = {
-            "ctez_outstanding_from": ctez_outstanding_from,
-            "ctez_outstanding_to": ctez_outstanding_to,
-            "tez_balance_from": tez_balance_from,
-            "tez_balance_to": tez_balance_to,
-            "owner": owner,
-            "liquidator": liquidator,
-            "xtz_lost": xtz_lost,
-            "ctez_lost": ctez_lost,
-            "timestamp": timestamp
-        }
+            liquidation_dict[hash] = {
+                "ctez_outstanding_from": ctez_outstanding_from,
+                "ctez_outstanding_to": ctez_outstanding_to,
+                "tez_balance_from": tez_balance_from,
+                "tez_balance_to": tez_balance_to,
+                "owner": owner,
+                "liquidator": liquidator,
+                "xtz_lost": xtz_lost,
+                "ctez_lost": ctez_lost,
+                "timestamp": timestamp
+            }
+        except Exception as e:
+            print(f"Error {e} for {liquidation}")
 
     return liquidation_dict
 
@@ -123,4 +127,6 @@ def run():
 
 
 if __name__ == "__main__":
-    run()
+    while True:
+        run()
+        time.sleep(360)
