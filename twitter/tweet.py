@@ -35,8 +35,6 @@ def pick():
             checkdata.append(op_hash)
             update_tweeted_file(checkdata)
 
-            return
-
 
 def tweet(what):
     print("Tweeting...")
