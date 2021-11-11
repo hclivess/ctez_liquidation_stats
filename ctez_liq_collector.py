@@ -140,5 +140,5 @@ if __name__ == "__main__":
         try:
             run()
         except Exception as e:
-            print(f"An error occurred: {e}, skipping run")
+            print(f"Error: {e}")
         time.sleep(360)

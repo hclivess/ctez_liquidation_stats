@@ -26,11 +26,15 @@ class ThreadedClient(threading.Thread):
 
     def run(self):
         while True:
-            ctez_liq_collector.run()
-            ctez_liq_tweet.pick()
-            run_interval = 360
-            print(f"Sleeping for {run_interval / 60} minutes")
+            try:
+                ctez_liq_collector.run()
+                ctez_liq_tweet.pick()
 
+                run_interval = 360
+                print(f"Sleeping for {run_interval / 60} minutes")
+                time.sleep(run_interval)
+            except Exception as e:
+                print(f"Error: {e}")
 
 if __name__ == "__main__":
     background = ThreadedClient()

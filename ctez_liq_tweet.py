@@ -11,35 +11,30 @@ def update_tweeted_file(new_list):
 
 
 def pick():
-    while True:
-        try:
+        liquidations = ctez_liq_collector.read_database()
 
-            liquidations = ctez_liq_collector.read_database()
+        if not os.path.exists("tweeted.json"):
+            with open("tweeted.json", "w") as tweet_file:
+                tweet_file.write(json.dumps([]))
 
-            if not os.path.exists("tweeted.json"):
-                with open("tweeted.json", "w") as tweet_file:
-                    tweet_file.write(json.dumps([]))
+                print("created tweeted.json file")
 
-                    print("created tweeted.json file")
+        with open("tweeted.json", "r") as checkfile:
+            checkdata = json.loads(checkfile.read())
 
-            with open("tweeted.json", "r") as checkfile:
-                checkdata = json.loads(checkfile.read())
+        for op_hash in liquidations.keys():
+            if op_hash in checkdata:
+                print(f"Already tweeted {op_hash}")
+            else:
+                to_tweet = f"Oven belonging to https://tzkt.io/{liquidations[op_hash]['owner']} has been liquidated for {liquidations[op_hash]['xtz_lost']} $XTZ by https://tzkt.io/{liquidations[op_hash]['liquidator']} 🧨️"
 
-            for op_hash in liquidations.keys():
-                if op_hash in checkdata:
-                    print(f"Already tweeted {op_hash}")
-                else:
-                    to_tweet = f"Oven belonging to https://tzkt.io/{liquidations[op_hash]['owner']} has been liquidated for {liquidations[op_hash]['xtz_lost']} $XTZ by https://tzkt.io/{liquidations[op_hash]['liquidator']} 🧨️"
+                tweet(to_tweet)
 
-                    tweet(to_tweet)
+                checkdata.append(op_hash)
+                update_tweeted_file(checkdata)
 
-                    checkdata.append(op_hash)
-                    update_tweeted_file(checkdata)
-
-        except Exception as e:
-            print(f"An error occurred: {e}, skipping run")
-
-        time.sleep(30)  # prevent ban
+                ban_prevention = 30
+                print(f"Sleeping for {ban_prevention} seconds")
 
 
 def tweet(what):
@@ -69,7 +64,12 @@ def auth(api_key, api_secret_key, access_token, access_token_secret):
 
 
 if __name__ == "__main__":
-    pick()
-    run_interval = 360
-    print(f"Sleeping for {run_interval / 60} minutes")
-    time.sleep(run_interval)
+    while True:
+        try:
+            pick()
+            run_interval = 360
+            print(f"Sleeping for {run_interval / 60} minutes")
+            time.sleep(run_interval)
+        except Exception as e:
+            print(f"Error: {e}")
+
