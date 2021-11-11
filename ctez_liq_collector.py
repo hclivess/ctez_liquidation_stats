@@ -4,6 +4,13 @@ import json
 
 lookback = 86400*2
 
+
+def read_database():
+    with open("database.json") as infile:
+        liquidations = json.loads(infile.read())
+
+    return liquidations
+
 def qualify(candidates):
     liquidations_list = []
     for c in candidates:
