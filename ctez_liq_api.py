@@ -16,9 +16,21 @@ class ReadHandler(tornado.web.RequestHandler):
     def get(self):
         liquidations = ctez_liq_collector.read_database()
 
+        total = 0
+        liquidators = []
+
+        for liquidation in liquidations.items():
+            total += liquidation[1]["xtz_lost"]
+            liquidators.append(liquidation[1]["liquidator"])
+
+
+
         self.render("liquidations.html",
                     title="ctez Oven Liquidations",
-                    liquidations=liquidations)
+                    liquidations=liquidations,
+                    total=total,
+                    leader=max(liquidators,
+                               key=liquidators.count))
 
 def make_app():
     return tornado.web.Application([
