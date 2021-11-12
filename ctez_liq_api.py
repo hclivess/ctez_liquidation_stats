@@ -48,7 +48,9 @@ class ThreadedClient(threading.Thread):
         while True:
             try:
                 ctez_liq_collector.run()
-                ctez_liq_tweet.pick()
+
+                if should_tweet:
+                    ctez_liq_tweet.pick()
 
                 run_interval = 360
                 print(f"Sleeping for {run_interval / 60} minutes")
@@ -58,6 +60,9 @@ class ThreadedClient(threading.Thread):
 
 
 if __name__ == "__main__":
+
+    should_tweet = False
+
     background = ThreadedClient()
     background.start()
     print("Background process started")
