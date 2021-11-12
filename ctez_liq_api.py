@@ -8,9 +8,10 @@ import time
 import ctez_liq_tweet
 
 
-class MainHandler(tornado.web.RequestHandler):
+class RawHandler(tornado.web.RequestHandler):
     def get(self):
         self.write(ctez_liq_collector.read_database())
+
 
 class ReadHandler(tornado.web.RequestHandler):
     def get(self):
@@ -23,8 +24,6 @@ class ReadHandler(tornado.web.RequestHandler):
             total += liquidation[1]["xtz_lost"]
             liquidators.append(liquidation[1]["liquidator"])
 
-
-
         self.render("liquidations.html",
                     title="ctez Oven Liquidations",
                     liquidations=liquidations,
@@ -32,10 +31,11 @@ class ReadHandler(tornado.web.RequestHandler):
                     leader=max(liquidators,
                                key=liquidators.count))
 
+
 def make_app():
     return tornado.web.Application([
-        (r"/", MainHandler),
-        (r"/read", ReadHandler),
+        (r"/raw", RawHandler),
+        (r"/", ReadHandler),
         (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "static"}),
     ])
 
@@ -59,7 +59,7 @@ class ThreadedClient(threading.Thread):
 
 if __name__ == "__main__":
     background = ThreadedClient()
-    #background.start()
+    background.start()
     print("Background process started")
 
     app = make_app()
