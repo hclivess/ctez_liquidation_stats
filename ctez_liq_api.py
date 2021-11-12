@@ -12,10 +12,18 @@ class MainHandler(tornado.web.RequestHandler):
     def get(self):
         self.write(ctez_liq_collector.read_database())
 
+class ReadHandler(tornado.web.RequestHandler):
+    def get(self):
+        liquidations = ctez_liq_collector.read_database()
+
+        self.render("liquidations.html",
+                    title="ctez Oven Liquidations",
+                    liquidations=liquidations)
 
 def make_app():
     return tornado.web.Application([
         (r"/", MainHandler),
+        (r"/read", ReadHandler),
         (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "static"}),
     ])
 
@@ -36,11 +44,13 @@ class ThreadedClient(threading.Thread):
             except Exception as e:
                 print(f"Error: {e}")
 
+
 if __name__ == "__main__":
     background = ThreadedClient()
-    background.start()
+    #background.start()
     print("Background process started")
 
     app = make_app()
     app.listen(1236)
+    print("Main process starting")
     tornado.ioloop.IOLoop.current().start()

@@ -1,0 +1,42 @@
+<html>
+   <head>
+       <title>{{ title }}</title>
+       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" >
+   </head>
+   <body>
+
+    <table class="table">
+      <tr>
+        <th>Timestamp</th>
+        <th>Hash</th>
+        <th>Owner</th>
+        <th>Liquidator</th>
+        <th>XTZ Liquidated</th>
+      </tr>
+
+        {% for liquidation in reversed(liquidations.items()) %}
+      <tr>
+        <td>
+            {{ liquidation[1]["timestamp"].replace("T"," ").replace("Z"," ") }}
+        </td>
+        <td>
+            <a href="https://tzkt.io/{{ liquidation[0] }}">{{ liquidation[0] }}</a>
+        </td>
+        <td>
+            <a href="https://tzkt.io/{{ liquidation[1]['owner'] }}">{{ liquidation[1]["owner"] }}</a>
+        </td>
+        <td>
+            <a href="https://tzkt.io/{{ liquidation[1]['liquidator'] }}">{{ liquidation[1]["liquidator"] }}</a>
+        </td>
+        <td>
+            {{ liquidation[1]["xtz_lost"] }}
+        </td>
+
+      </tr>
+        {% end %}
+
+    </table>
+
+   </body>
+ </html>
