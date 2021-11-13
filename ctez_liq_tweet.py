@@ -26,7 +26,7 @@ def pick():
             if op_hash in checkdata:
                 print(f"Already tweeted {op_hash}")
             else:
-                to_tweet = f"Oven belonging to https://tzkt.io/{liquidations[op_hash]['owner']} has been liquidated for {liquidations[op_hash]['xtz_lost']} $XTZ by https://tzkt.io/{liquidations[op_hash]['liquidator']} 🧨️"
+                to_tweet = f"Oven belonging to {liquidations[op_hash]['owner']} has been liquidated for {liquidations[op_hash]['xtz_lost']} tez by {liquidations[op_hash]['liquidator']}"
 
                 tweet(to_tweet)
 
