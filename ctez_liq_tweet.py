@@ -35,6 +35,7 @@ def pick():
 
                 ban_prevention = 30
                 print(f"Sleeping for {ban_prevention} seconds")
+                time.sleep(ban_prevention)
 
 
 def tweet(what):
