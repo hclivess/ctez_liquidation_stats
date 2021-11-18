@@ -61,7 +61,7 @@ class ThreadedClient(threading.Thread):
 
 if __name__ == "__main__":
 
-    should_tweet = True
+    should_tweet = False
 
     background = ThreadedClient()
     background.start()
