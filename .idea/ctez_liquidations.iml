@@ -4,5 +4,7 @@
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="ctez_drift_stats" />
+    <orderEntry type="module" module-name="PycharmProjects" />
   </component>
 </module>
