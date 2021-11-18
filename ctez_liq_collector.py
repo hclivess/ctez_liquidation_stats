@@ -3,7 +3,7 @@ import requests
 import json
 
 lookback = 86400*2
-
+#origination = 1793972
 
 def read_database():
     with open("database.json") as infile:
@@ -93,6 +93,9 @@ def prettify(liquidations_list):
             hash = (liquidation[0]
             ["hash"])
 
+            level = (liquidation[0]
+            ["level"])
+
             ctez_lost = (int(ctez_outstanding_from) - int(ctez_outstanding_to)) / 1000000
             xtz_lost = (int(tez_balance_from) - int(tez_balance_to)) / 1000000
 
@@ -105,7 +108,8 @@ def prettify(liquidations_list):
                 "liquidator": liquidator,
                 "xtz_lost": xtz_lost,
                 "ctez_lost": ctez_lost,
-                "timestamp": timestamp
+                "timestamp": timestamp,
+                "level": level
             }
         except Exception as e:
             print(f"Error {e} for {liquidation}")
