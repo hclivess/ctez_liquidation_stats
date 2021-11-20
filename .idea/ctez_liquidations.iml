@@ -6,5 +6,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="ctez_drift_stats" />
     <orderEntry type="module" module-name="PycharmProjects" />
+    <orderEntry type="module" module-name="videer" />
+    <orderEntry type="module" module-name="tezos_api_noobs" />
   </component>
 </module>
