@@ -2,7 +2,7 @@ import time
 import requests
 import json
 
-lookback = 86400*2
+lookback = 604800 * 1000
 #origination = 1793972
 
 def read_database():
@@ -20,7 +20,7 @@ def qualify(candidates):
 
 
 def parse_search():
-    ts = int(time.time())
+    ts = int(time.time()) * 1000
     url = f"https://api.better-call.dev/v1/search?q=liquidate&s={(ts - lookback)}&i=operation"  # week to date
     parsed = requests.get(url).text
     parsed_json = json.loads(parsed)
